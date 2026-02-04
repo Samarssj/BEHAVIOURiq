@@ -14,14 +14,14 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #1186d4;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgb(217, 10, 10);
 }
 
 .App-link {
@@ -35,4 +35,51 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Confetti pieces */
+.confetti-piece {
+  position: absolute;
+  top: -4vh;
+  width: 10px;
+  height: 18px;
+  border-radius: 2px;
+  opacity: 0.95;
+  transform-origin: center;
+  animation: confetti-fall 1200ms linear both, confetti-rotate 900ms ease-in-out infinite;
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translateY(110vh) rotate(30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-rotate {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(45deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Matched keyword tiny pop on click */
+.keyword-animate:active {
+  transform: scale(0.95) !important;
+}
+.keyword-animate {
+  transition: transform 160ms ease, box-shadow 200ms ease;
+}
+.keyword-animate:focus {
+  outline: none;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.18);
+}
+
+/* Save button pulse */
+@keyframes save-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(99,102,241,0.35); }
+  50% { transform: scale(1.06); box-shadow: 0 6px 18px rgba(99,102,241,0.18); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(99,102,241,0); }
+}
+.animate-save-pulse {
+  animation: save-pulse 700ms ease;
 }
