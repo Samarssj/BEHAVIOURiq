@@ -3,7 +3,6 @@ import './App.css';
 import {
   Brain,
   Users,
-  TrendingUp,
   Lightbulb,
   MessageSquare,
   BarChart3,
@@ -32,8 +31,7 @@ export default function BehaviorAnalyzer() {
   const [autoAnalyze, setAutoAnalyze] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
   const [savingPulse, setSavingPulse] = useState(false);
-  const [hoveredCard, setHoveredCard] = useState(null);
-  const [floatingEmojis, setFloatingEmojis] = useState([]);
+
 
   // Move behaviorPatterns to useCallback to memoize it
   const behaviorPatterns = useCallback(() => ({
