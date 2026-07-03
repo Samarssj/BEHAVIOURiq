@@ -14,137 +14,6 @@ import {
   Sparkles
 } from 'lucide-react';
 
-const behaviorPatterns = {
-  conformity: {
-    keywords: ['agree', 'group', 'fit in', 'peer pressure', 'same as others', 'follow'],
-    behaviorType: 'Social Conformity',
-    keyPatterns: [
-      'Modifying behavior to match group expectations',
-      'Suppressing personal opinions to maintain harmony',
-      'Seeking acceptance through behavioral alignment'
-    ],
-    psychologicalPrinciples: ['Social Proof (Cialdini)', 'Normative Social Influence', 'Groupthink'],
-    motivations:
-      'Driven by the fundamental human need for belonging and acceptance. Fear of rejection or social exclusion often overrides personal conviction.',
-    predictions:
-      'May lead to suppressed individuality, reduced innovation in group settings, and potential resentment. Long-term conformity can erode self-confidence and authentic expression.',
-    suggestions:
-      'Create psychologically safe environments where dissent is valued. Encourage anonymous feedback mechanisms. Practice and reward independent thinking before group discussions.'
-  },
-  phoneAddiction: {
-    keywords: ['phone', 'check', 'scroll', 'social media', 'notification', 'screen'],
-    behaviorType: 'Digital Compulsion',
-    keyPatterns: [
-      'Habitual checking behavior triggered by anxiety or boredom',
-      'Variable reward seeking (likes, messages, updates)',
-      'Displacement activity to avoid present moment discomfort'
-    ],
-    psychologicalPrinciples: ['Variable Ratio Reinforcement Schedule', 'Fear of Missing Out (FOMO)', 'Dopamine-driven feedback loops'],
-    motivations:
-      'Smartphones provide intermittent rewards that are highly addictive. Each check offers potential novelty or social validation, creating a dopamine cycle. Also serves as an escape from uncertainty.',
-    predictions:
-      'Decreased attention span, reduced quality of face-to-face interactions, increased anxiety when device is unavailable, and diminished ability to tolerate boredom or uncertainty.',
-    suggestions:
-      'Implement "phone stacking" during conversations. Use app timers and grayscale mode. Practice mindfulness techniques. Schedule specific "check-in" times rather than constant monitoring.'
-  },
-  surveillance: {
-    keywords: ['watching', 'manager', 'boss', 'harder when', 'observed', 'monitoring'],
-    behaviorType: 'Hawthorne Effect',
-    keyPatterns: [
-      'Performance increases under observation',
-      'Motivation shifts from intrinsic to extrinsic',
-      'Behavior modification based on perceived expectations'
-    ],
-    psychologicalPrinciples: ['Hawthorne Effect', 'Social Facilitation', 'Self-Presentation Theory'],
-    motivations:
-      'Awareness of being observed triggers heightened self-awareness and desire to meet perceived standards. Performance becomes about impression management rather than intrinsic task engagement.',
-    predictions:
-      'Decreased autonomous motivation over time. Performance may drop when surveillance ends. Can create anxiety and reduce workplace satisfaction if sustained.',
-    suggestions:
-      'Build trust-based rather than surveillance-based management systems. Focus on outcomes over activities. Develop intrinsic motivation through autonomy, mastery, and purpose.'
-  },
-  scarcity: {
-    keywords: ['limited', 'scarce', 'running out', 'last chance', 'exclusive', 'urgent'],
-    behaviorType: 'Scarcity-Driven Decision Making',
-    keyPatterns: [
-      'Accelerated decision-making under perceived scarcity',
-      'Increased perceived value of limited resources',
-      'Bypassing rational evaluation processes'
-    ],
-    psychologicalPrinciples: ['Scarcity Heuristic', 'Loss Aversion', 'Reactance Theory'],
-    motivations:
-      'Scarcity triggers primal survival instincts and loss aversion. The fear of missing out on a limited opportunity overrides careful deliberation. Urgency short-circuits normal decision-making.',
-    predictions:
-      "May lead to impulsive purchases, buyer's remorse, and decisions misaligned with actual needs. Can create artificial urgency that damages trust when overused.",
-    suggestions:
-      'Use ethical scarcity only when genuine. For consumers: implement cooling-off periods for urgent decisions. Ask "Would I buy this without the time pressure?" For marketers: balance urgency with transparency.'
-  },
-  defensive: {
-    keywords: ['defensive', 'feedback', 'criticism', 'reject', 'excuse', 'blame'],
-    behaviorType: 'Defensive Reactivity',
-    keyPatterns: [
-      'Automatic self-protection response to perceived threat',
-      'Cognitive dissonance reduction through rationalization',
-      'External attribution of negative outcomes'
-    ],
-    psychologicalPrinciples: ['Ego Defense Mechanisms', 'Cognitive Dissonance', 'Attribution Bias'],
-    motivations:
-      'Feedback threatens self-image and triggers protective mechanisms. The brain perceives criticism as a threat to identity, activating fight-or-flight responses before rational processing occurs.',
-    predictions:
-      "Missed growth opportunities, strained relationships, reputation as someone who can't receive feedback. Over time, isolation from honest communication and stunted professional development.",
-    suggestions:
-      'Practice the "2-second pause" before responding to feedback. Separate feedback on actions from threats to identity. Use "feedback journaling" to reflect later when emotions settle. Create psychological safety.'
-  },
-  procrastination: {
-    keywords: ['delay', 'procrastinate', 'put off', 'later', 'avoid', 'deadline'],
-    behaviorType: 'Task Avoidance & Procrastination',
-    keyPatterns: [
-      'Present bias favoring immediate gratification over future benefits',
-      'Anxiety or perfectionism creating avoidance behavior',
-      'Temporal discounting of future consequences'
-    ],
-    psychologicalPrinciples: ['Present Bias', 'Temporal Discounting', 'Anxiety-Driven Avoidance'],
-    motivations:
-      'Often stems from fear of failure, perfectionism, or task aversiveness rather than laziness. The brain prioritizes immediate emotional relief over future rewards, creating a cycle of short-term gains.',
-    predictions:
-      'Increased stress as deadlines approach, reduced quality of work, self-criticism and decreased self-efficacy. Can become a self-fulfilling prophecy where procrastination confirms negative beliefs.',
-    suggestions:
-      'Use the "2-minute rule" to overcome initial resistance. Break tasks into smaller, concrete actions. Time-box work sessions. Address underlying anxiety or perfectionism through self-compassion.'
-  },
-  mirroring: {
-    keywords: ['copy', 'mirror', 'imitate', 'mimic', 'same body language', 'match'],
-    behaviorType: 'Behavioral Mirroring & Rapport',
-    keyPatterns: [
-      'Unconscious mimicry of gestures and speech patterns',
-      'Synchronization building interpersonal connection',
-      'Chameleon effect in social interactions'
-    ],
-    psychologicalPrinciples: ['Chameleon Effect', 'Mirror Neurons', 'Rapport Building'],
-    motivations:
-      'Automatic neural response that builds empathy and connection. Mirroring signals "I\'m like you" at a subconscious level, reducing social distance and increasing trust and liking.',
-    predictions:
-      'Enhanced relationship building, increased persuasiveness, and social influence. Authentic mirroring strengthens bonds; deliberate manipulation can backfire if detected.',
-    suggestions:
-      'Allow natural mirroring in genuine conversations. Be aware of your own mirroring tendencies. In professional settings, use subtle matching to build rapport. Avoid excessive or obvious mirroring.'
-  },
-  anchoring: {
-    keywords: ['first', 'initial', 'starting point', 'reference', 'comparison', 'anchor'],
-    behaviorType: 'Cognitive Anchoring Bias',
-    keyPatterns: [
-      'Heavy reliance on first piece of information received',
-      'Insufficient adjustment from initial anchor',
-      'Arbitrary numbers influencing subsequent judgments'
-    ],
-    psychologicalPrinciples: ['Anchoring Bias', 'Insufficient Adjustment', 'Priming Effects'],
-    motivations:
-      'The brain uses mental shortcuts to process information efficiently. Initial information creates a reference point that disproportionately influences subsequent judgments, even when the anchor is arbitrary.',
-    predictions:
-      'Systematic bias in negotiations, pricing decisions, and estimates. Can be exploited in sales and marketing. Leads to suboptimal decisions when anchors are misleading.',
-    suggestions:
-      'Actively seek multiple reference points before making decisions. Question the source and relevance of initial information. In negotiations, consider making the first offer to set the anchor.'
-  }
-};
-
 export default function BehaviorAnalyzer() {
   const [scenario, setScenario] = useState('');
   const [analysis, setAnalysis] = useState(null);
@@ -161,6 +30,138 @@ export default function BehaviorAnalyzer() {
   const [celebrate, setCelebrate] = useState(false);
   const [savingPulse, setSavingPulse] = useState(false);
 
+  // Move behaviorPatterns to useMemo to memoize it
+  const behaviorPatterns = useCallback(() => ({
+    conformity: {
+      keywords: ['agree', 'group', 'fit in', 'peer pressure', 'same as others', 'follow'],
+      behaviorType: 'Social Conformity',
+      keyPatterns: [
+        'Modifying behavior to match group expectations',
+        'Suppressing personal opinions to maintain harmony',
+        'Seeking acceptance through behavioral alignment'
+      ],
+      psychologicalPrinciples: ['Social Proof (Cialdini)', 'Normative Social Influence', 'Groupthink'],
+      motivations:
+        'Driven by the fundamental human need for belonging and acceptance. Fear of rejection or social exclusion often overrides personal conviction.',
+      predictions:
+        'May lead to suppressed individuality, reduced innovation in group settings, and potential resentment. Long-term conformity can erode self-confidence and authentic expression.',
+      suggestions:
+        'Create psychologically safe environments where dissent is valued. Encourage anonymous feedback mechanisms. Practice and reward independent thinking before group discussions.'
+    },
+    phoneAddiction: {
+      keywords: ['phone', 'check', 'scroll', 'social media', 'notification', 'screen'],
+      behaviorType: 'Digital Compulsion',
+      keyPatterns: [
+        'Habitual checking behavior triggered by anxiety or boredom',
+        'Variable reward seeking (likes, messages, updates)',
+        'Displacement activity to avoid present moment discomfort'
+      ],
+      psychologicalPrinciples: ['Variable Ratio Reinforcement Schedule', 'Fear of Missing Out (FOMO)', 'Dopamine-driven feedback loops'],
+      motivations:
+        'Smartphones provide intermittent rewards that are highly addictive. Each check offers potential novelty or social validation, creating a dopamine cycle. Also serves as an escape from uncertainty.',
+      predictions:
+        'Decreased attention span, reduced quality of face-to-face interactions, increased anxiety when device is unavailable, and diminished ability to tolerate boredom or uncertainty.',
+      suggestions:
+        'Implement "phone stacking" during conversations. Use app timers and grayscale mode. Practice mindfulness techniques. Schedule specific "check-in" times rather than constant monitoring.'
+    },
+    surveillance: {
+      keywords: ['watching', 'manager', 'boss', 'harder when', 'observed', 'monitoring'],
+      behaviorType: 'Hawthorne Effect',
+      keyPatterns: [
+        'Performance increases under observation',
+        'Motivation shifts from intrinsic to extrinsic',
+        'Behavior modification based on perceived expectations'
+      ],
+      psychologicalPrinciples: ['Hawthorne Effect', 'Social Facilitation', 'Self-Presentation Theory'],
+      motivations:
+        'Awareness of being observed triggers heightened self-awareness and desire to meet perceived standards. Performance becomes about impression management rather than intrinsic task engagement.',
+      predictions:
+        'Decreased autonomous motivation over time. Performance may drop when surveillance ends. Can create anxiety and reduce workplace satisfaction if sustained.',
+      suggestions:
+        'Build trust-based rather than surveillance-based management systems. Focus on outcomes over activities. Develop intrinsic motivation through autonomy, mastery, and purpose.'
+    },
+    scarcity: {
+      keywords: ['limited', 'scarce', 'running out', 'last chance', 'exclusive', 'urgent'],
+      behaviorType: 'Scarcity-Driven Decision Making',
+      keyPatterns: [
+        'Accelerated decision-making under perceived scarcity',
+        'Increased perceived value of limited resources',
+        'Bypassing rational evaluation processes'
+      ],
+      psychologicalPrinciples: ['Scarcity Heuristic', 'Loss Aversion', 'Reactance Theory'],
+      motivations:
+        'Scarcity triggers primal survival instincts and loss aversion. The fear of missing out on a limited opportunity overrides careful deliberation. Urgency short-circuits normal decision-making.',
+      predictions:
+        "May lead to impulsive purchases, buyer's remorse, and decisions misaligned with actual needs. Can create artificial urgency that damages trust when overused.",
+      suggestions:
+        'Use ethical scarcity only when genuine. For consumers: implement cooling-off periods for urgent decisions. Ask "Would I buy this without the time pressure?" For marketers: balance urgency with transparency.'
+    },
+    defensive: {
+      keywords: ['defensive', 'feedback', 'criticism', 'reject', 'excuse', 'blame'],
+      behaviorType: 'Defensive Reactivity',
+      keyPatterns: [
+        'Automatic self-protection response to perceived threat',
+        'Cognitive dissonance reduction through rationalization',
+        'External attribution of negative outcomes'
+      ],
+      psychologicalPrinciples: ['Ego Defense Mechanisms', 'Cognitive Dissonance', 'Attribution Bias'],
+      motivations:
+        'Feedback threatens self-image and triggers protective mechanisms. The brain perceives criticism as a threat to identity, activating fight-or-flight responses before rational processing occurs.',
+      predictions:
+        "Missed growth opportunities, strained relationships, reputation as someone who can't receive feedback. Over time, isolation from honest communication and stunted professional development.",
+      suggestions:
+        'Practice the "2-second pause" before responding to feedback. Separate feedback on actions from threats to identity. Use "feedback journaling" to reflect later when emotions settle. Create psychological safety.'
+    },
+    procrastination: {
+      keywords: ['delay', 'procrastinate', 'put off', 'later', 'avoid', 'deadline'],
+      behaviorType: 'Task Avoidance & Procrastination',
+      keyPatterns: [
+        'Present bias favoring immediate gratification over future benefits',
+        'Anxiety or perfectionism creating avoidance behavior',
+        'Temporal discounting of future consequences'
+      ],
+      psychologicalPrinciples: ['Present Bias', 'Temporal Discounting', 'Anxiety-Driven Avoidance'],
+      motivations:
+        'Often stems from fear of failure, perfectionism, or task aversiveness rather than laziness. The brain prioritizes immediate emotional relief over future rewards, creating a cycle of short-term gains.',
+      predictions:
+        'Increased stress as deadlines approach, reduced quality of work, self-criticism and decreased self-efficacy. Can become a self-fulfilling prophecy where procrastination confirms negative beliefs.',
+      suggestions:
+        'Use the "2-minute rule" to overcome initial resistance. Break tasks into smaller, concrete actions. Time-box work sessions. Address underlying anxiety or perfectionism through self-compassion.'
+    },
+    mirroring: {
+      keywords: ['copy', 'mirror', 'imitate', 'mimic', 'same body language', 'match'],
+      behaviorType: 'Behavioral Mirroring & Rapport',
+      keyPatterns: [
+        'Unconscious mimicry of gestures and speech patterns',
+        'Synchronization building interpersonal connection',
+        'Chameleon effect in social interactions'
+      ],
+      psychologicalPrinciples: ['Chameleon Effect', 'Mirror Neurons', 'Rapport Building'],
+      motivations:
+        'Automatic neural response that builds empathy and connection. Mirroring signals "I\'m like you" at a subconscious level, reducing social distance and increasing trust and liking.',
+      predictions:
+        'Enhanced relationship building, increased persuasiveness, and social influence. Authentic mirroring strengthens bonds; deliberate manipulation can backfire if detected.',
+      suggestions:
+        'Allow natural mirroring in genuine conversations. Be aware of your own mirroring tendencies. In professional settings, use subtle matching to build rapport. Avoid excessive or obvious mirroring.'
+    },
+    anchoring: {
+      keywords: ['first', 'initial', 'starting point', 'reference', 'comparison', 'anchor'],
+      behaviorType: 'Cognitive Anchoring Bias',
+      keyPatterns: [
+        'Heavy reliance on first piece of information received',
+        'Insufficient adjustment from initial anchor',
+        'Arbitrary numbers influencing subsequent judgments'
+      ],
+      psychologicalPrinciples: ['Anchoring Bias', 'Insufficient Adjustment', 'Priming Effects'],
+      motivations:
+        'The brain uses mental shortcuts to process information efficiently. Initial information creates a reference point that disproportionately influences subsequent judgments, even when the anchor is arbitrary.',
+      predictions:
+        'Systematic bias in negotiations, pricing decisions, and estimates. Can be exploited in sales and marketing. Leads to suboptimal decisions when anchors are misleading.',
+      suggestions:
+        'Actively seek multiple reference points before making decisions. Question the source and relevance of initial information. In negotiations, consider making the first offer to set the anchor.'
+    }
+  }), []);
+
   const analyzeBehavior = useCallback((inputText = null) => {
     const text = (inputText ?? scenario ?? '').trim();
     if (!text) return;
@@ -173,13 +174,14 @@ export default function BehaviorAnalyzer() {
     // Fake processing / simulate progress
     setTimeout(() => {
       const lowerScenario = text.toLowerCase();
+      const patterns = behaviorPatterns();
 
       // Find best matching pattern
       let bestMatch = null;
       let maxMatches = 0;
       let bestMatchedKeywords = [];
 
-      for (const pattern of Object.values(behaviorPatterns)) {
+      for (const pattern of Object.values(patterns)) {
         const matches = pattern.keywords.filter((keyword) => lowerScenario.includes(keyword));
         if (matches.length > maxMatches) {
           maxMatches = matches.length;
@@ -222,7 +224,7 @@ export default function BehaviorAnalyzer() {
         setTimeout(() => setCelebrate(false), 1200);
       }, 350);
     }, 900);
-  }, [scenario]);
+  }, [scenario, behaviorPatterns]);
 
   // Auto-analyze (debounced) when enabled
   useEffect(() => {
