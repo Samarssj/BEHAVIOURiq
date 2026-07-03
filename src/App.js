@@ -30,65 +30,6 @@ export default function BehaviorAnalyzer() {
   const [celebrate, setCelebrate] = useState(false);
   const [savingPulse, setSavingPulse] = useState(false);
 
-  // Auto-analyze (debounced) when enabled
-  useEffect(() => {
-    if (!autoAnalyze) return;
-    if (!scenario.trim()) return;
-    const id = setTimeout(() => analyzeBehavior(scenario), 600);
-    return () => clearTimeout(id);
-  }, [scenario, autoAnalyze]);
-
-  // Confetti component (small CSS-based celebration)
-  const Confetti = () => {
-    const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f97316', '#10b981', '#f43f5e'];
-    return (
-      <div className="pointer-events-none fixed inset-0 z-40 overflow-hidden">
-        {[...Array(12)].map((_, i) => (
-          <span
-            key={i}
-            className="confetti-piece"
-            style={{ left: `${(i / 12) * 100}%`, backgroundColor: colors[i % colors.length] }}
-          />
-        ))}
-      </div>
-    );
-  };
-
-  // Load saved insights on mount
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('behavioriq.savedInsights');
-      if (raw) setSavedInsights(JSON.parse(raw));
-    } catch (e) {
-      console.error('Failed to load saved insights', e);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (toast) {
-      const t = setTimeout(() => setToast(null), 3000);
-      return () => clearTimeout(t);
-    }
-  }, [toast]);
-
-  useEffect(() => {
-    if (!loading) {
-      setProgress(0);
-      if (progressRef.current) clearInterval(progressRef.current);
-      return;
-    }
-
-    setProgress(6);
-    progressRef.current = setInterval(() => {
-      setProgress((p) => {
-        if (p >= 92) return p; // wait for completion
-        return Math.min(92, p + Math.random() * 12);
-      });
-    }, 200);
-
-    return () => clearInterval(progressRef.current);
-  }, [loading]);
-
   const behaviorPatterns = {
     conformity: {
       keywords: ['agree', 'group', 'fit in', 'peer pressure', 'same as others', 'follow'],
@@ -116,7 +57,7 @@ export default function BehaviorAnalyzer() {
       ],
       psychologicalPrinciples: ['Variable Ratio Reinforcement Schedule', 'Fear of Missing Out (FOMO)', 'Dopamine-driven feedback loops'],
       motivations:
-        'Smartphones provide intermittent rewards that are highly addictive. Each check offers potential novelty or social validation, creating a dopamine cycle. Also serves as an escape from uncomfortable social situations.',
+        'Smartphones provide intermittent rewards that are highly addictive. Each check offers potential novelty or social validation, creating a dopamine cycle. Also serves as an escape from uncertainty.',
       predictions:
         'Decreased attention span, reduced quality of face-to-face interactions, increased anxiety when device is unavailable, and diminished ability to tolerate boredom or uncertainty.',
       suggestions:
@@ -168,7 +109,7 @@ export default function BehaviorAnalyzer() {
       predictions:
         "Missed growth opportunities, strained relationships, reputation as someone who can't receive feedback. Over time, isolation from honest communication and stunted professional development.",
       suggestions:
-        'Practice the "2-second pause" before responding to feedback. Separate feedback on actions from threats to identity. Use "feedback journaling" to reflect later when emotions settle. Create feedback rituals that feel psychologically safe.'
+        'Practice the "2-second pause" before responding to feedback. Separate feedback on actions from threats to identity. Use "feedback journaling" to reflect later when emotions settle. Create psychological safety.'
     },
     procrastination: {
       keywords: ['delay', 'procrastinate', 'put off', 'later', 'avoid', 'deadline'],
@@ -180,11 +121,11 @@ export default function BehaviorAnalyzer() {
       ],
       psychologicalPrinciples: ['Present Bias', 'Temporal Discounting', 'Anxiety-Driven Avoidance'],
       motivations:
-        'Often stems from fear of failure, perfectionism, or task aversiveness rather than laziness. The brain prioritizes immediate emotional relief over future rewards, creating a cycle of short-term stress reduction.',
+        'Often stems from fear of failure, perfectionism, or task aversiveness rather than laziness. The brain prioritizes immediate emotional relief over future rewards, creating a cycle of short-term gains.',
       predictions:
-        'Increased stress as deadlines approach, reduced quality of work, self-criticism and decreased self-efficacy. Can become a self-fulfilling prophecy where procrastination confirms negative self-beliefs.',
+        'Increased stress as deadlines approach, reduced quality of work, self-criticism and decreased self-efficacy. Can become a self-fulfilling prophecy where procrastination confirms negative beliefs.',
       suggestions:
-        'Use the "2-minute rule" to overcome initial resistance. Break tasks into smaller, concrete actions. Time-box work sessions. Address underlying anxiety or perfectionism through self-compassion practices.'
+        'Use the "2-minute rule" to overcome initial resistance. Break tasks into smaller, concrete actions. Time-box work sessions. Address underlying anxiety or perfectionism through self-compassion.'
     },
     mirroring: {
       keywords: ['copy', 'mirror', 'imitate', 'mimic', 'same body language', 'match'],
@@ -200,7 +141,7 @@ export default function BehaviorAnalyzer() {
       predictions:
         'Enhanced relationship building, increased persuasiveness, and social influence. Authentic mirroring strengthens bonds; deliberate manipulation can backfire if detected.',
       suggestions:
-        'Allow natural mirroring in genuine conversations. Be aware of your own mirroring tendencies. In professional settings, use subtle matching to build rapport. Avoid excessive or obvious mimicry.'
+        'Allow natural mirroring in genuine conversations. Be aware of your own mirroring tendencies. In professional settings, use subtle matching to build rapport. Avoid excessive or obvious mirroring.'
     },
     anchoring: {
       keywords: ['first', 'initial', 'starting point', 'reference', 'comparison', 'anchor'],
@@ -212,11 +153,11 @@ export default function BehaviorAnalyzer() {
       ],
       psychologicalPrinciples: ['Anchoring Bias', 'Insufficient Adjustment', 'Priming Effects'],
       motivations:
-        'The brain uses mental shortcuts to process information efficiently. Initial information creates a reference point that disproportionately influences subsequent judgments, even when the anchor is irrelevant.',
+        'The brain uses mental shortcuts to process information efficiently. Initial information creates a reference point that disproportionately influences subsequent judgments, even when the anchor is arbitrary.',
       predictions:
         'Systematic bias in negotiations, pricing decisions, and estimates. Can be exploited in sales and marketing. Leads to suboptimal decisions when anchors are misleading.',
       suggestions:
-        'Actively seek multiple reference points before making decisions. Question the source and relevance of initial information. In negotiations, consider making the first offer to set the anchor strategically.'
+        'Actively seek multiple reference points before making decisions. Question the source and relevance of initial information. In negotiations, consider making the first offer to set the anchor.'
     }
   };
 
@@ -238,7 +179,7 @@ export default function BehaviorAnalyzer() {
       let maxMatches = 0;
       let bestMatchedKeywords = [];
 
-      for (const [key, pattern] of Object.entries(behaviorPatterns)) {
+      for (const pattern of Object.values(behaviorPatterns)) {
         const matches = pattern.keywords.filter((keyword) => lowerScenario.includes(keyword));
         if (matches.length > maxMatches) {
           maxMatches = matches.length;
@@ -262,7 +203,7 @@ export default function BehaviorAnalyzer() {
           predictions:
             'Behavior tends to persist when reinforced and diminish when consequences are negative. Context changes can shift patterns. Self-awareness and intentional practice can modify habitual responses.',
           suggestions:
-            'Start by identifying triggers and patterns. Consider what needs the behavior serves. Experiment with alternative responses. Seek feedback from trusted others. Professional guidance can help with persistent challenging patterns.'
+            'Start by identifying triggers and patterns. Consider what needs the behavior serves. Experiment with alternative responses. Seek feedback from trusted others. Professional guidance can help.'
         };
         bestMatchedKeywords = [];
       }
@@ -282,6 +223,49 @@ export default function BehaviorAnalyzer() {
       }, 350);
     }, 900);
   };
+
+  // Auto-analyze (debounced) when enabled
+  useEffect(() => {
+    if (!autoAnalyze) return;
+    if (!scenario.trim()) return;
+    const id = setTimeout(() => analyzeBehavior(scenario), 600);
+    return () => clearTimeout(id);
+  }, [scenario, autoAnalyze]);
+
+  // Load saved insights on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('behavioriq.savedInsights');
+      if (raw) setSavedInsights(JSON.parse(raw));
+    } catch (e) {
+      console.error('Failed to load saved insights', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (toast) {
+      const t = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    if (!loading) {
+      setProgress(0);
+      if (progressRef.current) clearInterval(progressRef.current);
+      return;
+    }
+
+    setProgress(6);
+    progressRef.current = setInterval(() => {
+      setProgress((p) => {
+        if (p >= 92) return p; // wait for completion
+        return Math.min(92, p + Math.random() * 12);
+      });
+    }, 200);
+
+    return () => clearInterval(progressRef.current);
+  }, [loading]);
 
   const exampleScenarios = [
     "Someone always agrees with the group even when they disagree privately",
@@ -327,6 +311,22 @@ export default function BehaviorAnalyzer() {
     setSavedInsights(next);
     localStorage.setItem('behavioriq.savedInsights', JSON.stringify(next));
     setToast('Removed');
+  };
+
+  // Confetti component (small CSS-based celebration)
+  const Confetti = () => {
+    const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f97316', '#10b981', '#f43f5e'];
+    return (
+      <div className="pointer-events-none fixed inset-0 z-40 overflow-hidden">
+        {[...Array(12)].map((_, i) => (
+          <span
+            key={i}
+            className="confetti-piece"
+            style={{ left: `${(i / 12) * 100}%`, backgroundColor: colors[i % colors.length] }}
+          />
+        ))}
+      </div>
+    );
   };
 
   return (
