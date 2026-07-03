@@ -11,7 +11,10 @@ import {
   Save,
   Trash2,
   CheckCircle,
-  Sparkles
+  Sparkles,
+  Zap,
+  Heart,
+  Target
 } from 'lucide-react';
 
 export default function BehaviorAnalyzer() {
@@ -29,12 +32,16 @@ export default function BehaviorAnalyzer() {
   const [autoAnalyze, setAutoAnalyze] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
   const [savingPulse, setSavingPulse] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [floatingEmojis, setFloatingEmojis] = useState([]);
 
-  // Move behaviorPatterns to useMemo to memoize it
+  // Move behaviorPatterns to useCallback to memoize it
   const behaviorPatterns = useCallback(() => ({
     conformity: {
       keywords: ['agree', 'group', 'fit in', 'peer pressure', 'same as others', 'follow'],
       behaviorType: 'Social Conformity',
+      emoji: '👥',
+      color: 'from-blue-500 to-cyan-500',
       keyPatterns: [
         'Modifying behavior to match group expectations',
         'Suppressing personal opinions to maintain harmony',
@@ -51,6 +58,8 @@ export default function BehaviorAnalyzer() {
     phoneAddiction: {
       keywords: ['phone', 'check', 'scroll', 'social media', 'notification', 'screen'],
       behaviorType: 'Digital Compulsion',
+      emoji: '📱',
+      color: 'from-purple-500 to-pink-500',
       keyPatterns: [
         'Habitual checking behavior triggered by anxiety or boredom',
         'Variable reward seeking (likes, messages, updates)',
@@ -67,6 +76,8 @@ export default function BehaviorAnalyzer() {
     surveillance: {
       keywords: ['watching', 'manager', 'boss', 'harder when', 'observed', 'monitoring'],
       behaviorType: 'Hawthorne Effect',
+      emoji: '👁️',
+      color: 'from-orange-500 to-red-500',
       keyPatterns: [
         'Performance increases under observation',
         'Motivation shifts from intrinsic to extrinsic',
@@ -83,6 +94,8 @@ export default function BehaviorAnalyzer() {
     scarcity: {
       keywords: ['limited', 'scarce', 'running out', 'last chance', 'exclusive', 'urgent'],
       behaviorType: 'Scarcity-Driven Decision Making',
+      emoji: '⏰',
+      color: 'from-yellow-500 to-orange-500',
       keyPatterns: [
         'Accelerated decision-making under perceived scarcity',
         'Increased perceived value of limited resources',
@@ -99,6 +112,8 @@ export default function BehaviorAnalyzer() {
     defensive: {
       keywords: ['defensive', 'feedback', 'criticism', 'reject', 'excuse', 'blame'],
       behaviorType: 'Defensive Reactivity',
+      emoji: '🛡️',
+      color: 'from-red-500 to-pink-500',
       keyPatterns: [
         'Automatic self-protection response to perceived threat',
         'Cognitive dissonance reduction through rationalization',
@@ -115,6 +130,8 @@ export default function BehaviorAnalyzer() {
     procrastination: {
       keywords: ['delay', 'procrastinate', 'put off', 'later', 'avoid', 'deadline'],
       behaviorType: 'Task Avoidance & Procrastination',
+      emoji: '🐌',
+      color: 'from-green-500 to-emerald-500',
       keyPatterns: [
         'Present bias favoring immediate gratification over future benefits',
         'Anxiety or perfectionism creating avoidance behavior',
@@ -131,6 +148,8 @@ export default function BehaviorAnalyzer() {
     mirroring: {
       keywords: ['copy', 'mirror', 'imitate', 'mimic', 'same body language', 'match'],
       behaviorType: 'Behavioral Mirroring & Rapport',
+      emoji: '🪞',
+      color: 'from-indigo-500 to-purple-500',
       keyPatterns: [
         'Unconscious mimicry of gestures and speech patterns',
         'Synchronization building interpersonal connection',
@@ -147,6 +166,8 @@ export default function BehaviorAnalyzer() {
     anchoring: {
       keywords: ['first', 'initial', 'starting point', 'reference', 'comparison', 'anchor'],
       behaviorType: 'Cognitive Anchoring Bias',
+      emoji: '⚓',
+      color: 'from-cyan-500 to-blue-500',
       keyPatterns: [
         'Heavy reliance on first piece of information received',
         'Insufficient adjustment from initial anchor',
@@ -194,6 +215,8 @@ export default function BehaviorAnalyzer() {
       if (!bestMatch) {
         bestMatch = {
           behaviorType: 'General Human Behavior',
+          emoji: '🧠',
+          color: 'from-slate-500 to-gray-500',
           keyPatterns: [
             'Complex interaction of cognitive, emotional, and social factors',
             'Influenced by context, past experiences, and current needs',
@@ -218,7 +241,7 @@ export default function BehaviorAnalyzer() {
       setTimeout(() => {
         setLoading(false);
         setProgress(0);
-        setToast('Analysis complete!');
+        setToast('✨ Analysis complete!');
         // brief celebratory animation
         setCelebrate(true);
         setTimeout(() => setCelebrate(false), 1200);
@@ -261,7 +284,7 @@ export default function BehaviorAnalyzer() {
     setProgress(6);
     progressRef.current = setInterval(() => {
       setProgress((p) => {
-        if (p >= 92) return p; // wait for completion
+        if (p >= 92) return p;
         return Math.min(92, p + Math.random() * 12);
       });
     }, 200);
@@ -285,9 +308,9 @@ export default function BehaviorAnalyzer() {
   const copyToClipboard = async (text, label = '') => {
     try {
       await navigator.clipboard.writeText(text);
-      setToast(label ? `${label} copied to clipboard` : 'Copied to clipboard');
+      setToast(`✅ ${label || 'Copied to clipboard'}`);
     } catch (e) {
-      setToast('Unable to copy');
+      setToast('❌ Unable to copy');
     }
   };
 
@@ -303,7 +326,7 @@ export default function BehaviorAnalyzer() {
     const next = [item, ...savedInsights].slice(0, 20);
     setSavedInsights(next);
     localStorage.setItem('behavioriq.savedInsights', JSON.stringify(next));
-    setToast('Insight saved');
+    setToast('💾 Insight saved!');
     setSavingPulse(true);
     setTimeout(() => setSavingPulse(false), 700);
   };
@@ -312,7 +335,7 @@ export default function BehaviorAnalyzer() {
     const next = savedInsights.filter((s) => s.id !== id);
     setSavedInsights(next);
     localStorage.setItem('behavioriq.savedInsights', JSON.stringify(next));
-    setToast('Removed');
+    setToast('🗑️ Removed');
   };
 
   // Confetti component (small CSS-based celebration)
@@ -320,11 +343,11 @@ export default function BehaviorAnalyzer() {
     const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f97316', '#10b981', '#f43f5e'];
     return (
       <div className="pointer-events-none fixed inset-0 z-40 overflow-hidden">
-        {[...Array(12)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <span
             key={i}
             className="confetti-piece"
-            style={{ left: `${(i / 12) * 100}%`, backgroundColor: colors[i % colors.length] }}
+            style={{ left: `${(i / 15) * 100}%`, backgroundColor: colors[i % colors.length] }}
           />
         ))}
       </div>
@@ -332,38 +355,51 @@ export default function BehaviorAnalyzer() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6 relative overflow-hidden">
+      {/* Animated background blobs */}
+      <div className="fixed top-0 left-0 w-96 h-96 bg-gradient-to-r from-indigo-200 to-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+      <div className="fixed bottom-0 right-0 w-96 h-96 bg-gradient-to-r from-pink-200 to-red-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+      
+      <div className="max-w-5xl mx-auto relative z-10">
         {/* Header */}
-        <div className="text-center mb-8">{
-          celebrate && <Confetti />
-        }
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Brain className="w-12 h-12 text-indigo-600" />
-            <h1 className="text-4xl font-bold text-gray-800">BehaviorIQ</h1>
+        <div className="text-center mb-12">
+          {celebrate && <Confetti />}
+          <div className="inline-block mb-6">
+            <div className="relative">
+              <div className="absolute -inset-2 bg-gradient-to-r from-indigo-600 to-pink-600 rounded-lg blur opacity-75 animate-pulse" />
+              <div className="relative bg-white px-6 py-3 rounded-lg">
+                <Brain className="w-12 h-12 text-indigo-600 mx-auto mb-2 icon-bounce" />
+              </div>
+            </div>
           </div>
-          <p className="text-gray-600 text-lg">AI-Powered Human Behavior Analysis</p>
+          <h1 className="text-5xl font-black text-gray-800 mb-3 gradient-title">
+            BehaviorIQ
+          </h1>
+          <p className="text-lg text-gray-600 font-medium tracking-wide">AI-Powered Human Behavior Analysis 🧬</p>
+          <p className="text-sm text-indigo-600 mt-2">Understand the psychology behind every action</p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-2 mb-6 bg-white rounded-lg p-2 shadow-sm">
+        <div className="flex gap-3 mb-8 bg-white/80 backdrop-blur-md rounded-full p-1 shadow-lg border border-white/20">
           <button
             onClick={() => setActiveTab('analyze')}
-            className={`flex-1 py-3 px-4 rounded-md font-medium transition-all ${
-              activeTab === 'analyze' ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'
+            className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${activeTab === 'analyze'
+              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg scale-105'
+              : 'text-gray-600 hover:text-gray-800'
             }`}
           >
             <MessageSquare className="w-4 h-4 inline mr-2" />
-            Analyze Behavior
+            Analyze
           </button>
           <button
             onClick={() => setActiveTab('insights')}
-            className={`flex-1 py-3 px-4 rounded-md font-medium transition-all ${
-              activeTab === 'insights' ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'
+            className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${activeTab === 'insights'
+              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg scale-105'
+              : 'text-gray-600 hover:text-gray-800'
             }`}
           >
             <BarChart3 className="w-4 h-4 inline mr-2" />
-            How It Works
+            Learn
           </button>
         </div>
 
@@ -371,27 +407,27 @@ export default function BehaviorAnalyzer() {
         {activeTab === 'analyze' ? (
           <div className="space-y-6">
             {/* Input Section */}
-            <div className="bg-white rounded-xl shadow-lg p-6 relative">
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 relative border border-white/20 card-hover">
               {/* Progress bar */}
-              <div className="absolute left-0 right-0 top-0 h-1 bg-transparent rounded-t">
+              <div className="absolute left-0 right-0 top-0 h-1.5 bg-gradient-to-r from-indigo-200 to-purple-200 rounded-t-2xl overflow-hidden">
                 <div
-                  className={`h-1 rounded-t bg-gradient-to-r from-indigo-500 to-purple-500 transition-all`} 
+                  className="h-1.5 rounded-t-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-300 progress-bar shadow-lg"
                   style={{ width: `${progress}%` }}
                 />
               </div>
 
-              <label className="block text-gray-700 font-semibold mb-3">Describe a behavior or scenario:</label>
+              <label className="block text-gray-800 font-bold mb-3 text-lg">🎯 Describe a behavior or scenario:</label>
               <textarea
                 value={scenario}
                 onChange={(e) => setScenario(e.target.value)}
                 onKeyDown={onKeyDownHandler}
                 placeholder="Example: A team member becomes defensive when receiving constructive feedback..."
-                className="w-full h-32 p-4 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none resize-none"
+                className="w-full h-32 p-4 border-2 border-indigo-200 rounded-xl focus:border-indigo-500 focus:outline-none resize-none bg-indigo-50/50 text-gray-800 placeholder-gray-500 font-medium transition-all"
                 aria-label="Behavior scenario input"
               />
 
               <div className="mt-4 flex flex-wrap gap-2 items-center">
-                <span className="text-sm text-gray-600 mr-2">Try these:</span>
+                <span className="text-sm text-gray-600 font-semibold mr-2">💡 Try these:</span>
                 {exampleScenarios.map((example, idx) => (
                   <button
                     key={idx}
@@ -399,10 +435,10 @@ export default function BehaviorAnalyzer() {
                       setScenario(example);
                       analyzeBehavior(example);
                     }}
-                    className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full hover:bg-indigo-100 transition-transform transform hover:scale-105"
+                    className="text-xs bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 px-3 py-1.5 rounded-full hover:shadow-md keyword-animate font-medium border border-indigo-200 hover:border-indigo-400"
                     title={`Use example: ${example}`}
                   >
-                    {example.slice(0, 40)}...
+                    {example.slice(0, 35)}...
                   </button>
                 ))}
 
@@ -411,43 +447,43 @@ export default function BehaviorAnalyzer() {
                     setScenario('');
                     setAnalysis(null);
                     setMatchedKeywords([]);
-                    setToast('Input cleared');
+                    setToast('🗑️ Input cleared');
                   }}
-                  className="ml-auto text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-200 transition-transform transform hover:scale-105"
+                  className="ml-auto text-xs bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full hover:bg-gray-200 font-medium border border-gray-300 transition-all"
                 >
                   Clear
                 </button>
               </div>
 
               {/* Shortcut hint & Auto-analyze toggle */}
-              <div className="mt-3 flex items-center justify-between">
-                <div className="text-sm text-gray-600">Press <kbd className="px-1 py-0.5 bg-gray-100 rounded">Ctrl/Cmd</kbd> + <kbd className="px-1 py-0.5 bg-gray-100 rounded">Enter</kbd> to analyze</div>
+              <div className="mt-4 flex items-center justify-between">
+                <div className="text-xs text-gray-600 font-semibold">⌨️ Press <kbd className="px-1.5 py-0.5 bg-gray-200 rounded text-gray-800 font-bold">Ctrl/Cmd</kbd> + <kbd className="px-1.5 py-0.5 bg-gray-200 rounded text-gray-800 font-bold">Enter</kbd> to analyze</div>
                 <div className="flex items-center gap-3">
-                  <div className="text-sm text-gray-600">Auto-analyze</div>
+                  <div className="text-sm text-gray-600 font-semibold">⚡ Auto-analyze</div>
                   <button
                     onClick={() => setAutoAnalyze(!autoAnalyze)}
                     aria-pressed={autoAnalyze}
-                    className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none ${autoAnalyze ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                    className={`relative inline-flex items-center h-7 rounded-full w-12 transition-all ${autoAnalyze ? 'bg-gradient-to-r from-indigo-600 to-purple-600' : 'bg-gray-300'} shadow-md`}
                     title="Toggle auto analyze"
                   >
-                    <span className={`inline-block w-4 h-4 bg-white rounded-full transform transition-transform ${autoAnalyze ? 'translate-x-5' : 'translate-x-1'}`} />
+                    <span className={`inline-block w-5 h-5 bg-white rounded-full shadow-md transition-transform ${autoAnalyze ? 'translate-x-5' : 'translate-x-1'}`} />
                   </button>
                 </div>
               </div>
 
-              <div className="mt-4 flex gap-3">
+              <div className="mt-5 flex gap-3">
                 <button
                   onClick={() => analyzeBehavior()}
                   disabled={loading || !scenario.trim()}
-                  className="mt-2 flex-1 bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+                  className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-xl font-bold hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform active:scale-95 text-lg"
                 >
-                  {loading ? 'Analyzing...' : 'Analyze Behavior'}
+                  {loading ? '🔄 Analyzing...' : '🚀 Analyze Behavior'}
                 </button>
 
                 <button
                   onClick={() => copyToClipboard(scenario, 'Scenario')}
                   disabled={!scenario.trim()}
-                  className="mt-2 flex items-center gap-2 px-4 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-transform transform hover:scale-105"
+                  className="flex items-center gap-2 px-4 rounded-xl border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 transition-all font-semibold disabled:opacity-50"
                   title="Copy scenario"
                 >
                   <Clipboard className="w-4 h-4" />
@@ -458,60 +494,61 @@ export default function BehaviorAnalyzer() {
 
             {/* Results Section */}
             {analysis && (
-              <div className="bg-white rounded-xl shadow-lg p-6 space-y-6 relative">
-                {/* little celebratory icon */}
-                <div className="absolute -top-4 right-6 flex items-center gap-2">
-                  <CheckCircle className="w-8 h-8 text-green-500 animate-pulse" />
+              <div className="bg-gradient-to-br from-white/95 to-purple-50/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 space-y-6 border border-white/20 relative result-slide">
+                {/* Emoji icon with glow */}
+                <div className="absolute -top-6 right-8 text-5xl animate-bounce">
+                  {analysis.emoji}
                 </div>
 
-                <div className="flex justify-between items-start gap-4">
-                  <div className="border-l-4 border-indigo-600 pl-4 flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Users className="w-5 h-5 text-indigo-600" />
-                      <h3 className="font-bold text-lg text-gray-800">Behavior Type</h3>
-                    </div>
-                    <p className="text-gray-700">{analysis.behaviorType}</p>
-                  </div>
+                {/* celebratory icon */}
+                <div className="absolute -top-4 left-8">
+                  <CheckCircle className="w-10 h-10 text-green-500 animate-pulse" />
+                </div>
 
-                  <div className="flex-shrink-0 flex items-center gap-2">
+                {/* Behavior Type with gradient background */}
+                <div className={`bg-gradient-to-r ${analysis.color} rounded-xl p-6 text-white shadow-lg`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Users className="w-6 h-6" />
+                    <h3 className="font-black text-xl">Behavior Pattern Detected</h3>
+                  </div>
+                  <p className="text-3xl font-black">{analysis.behaviorType}</p>
+                  <div className="mt-4 flex items-center gap-3">
                     <button
                       onClick={() => copyToClipboard(analysis.behaviorType, 'Behavior type')}
-                      className="p-2 rounded-md bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-transform transform hover:scale-105"
+                      className="text-white hover:bg-white/20 p-2 rounded-lg transition-all"
                       title="Copy behavior type"
                     >
-                      <Clipboard className="w-4 h-4" />
+                      <Clipboard className="w-5 h-5" />
                     </button>
-
                     <button
                       onClick={saveInsight}
-                      className={`p-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-transform transform hover:scale-105 ${savingPulse ? 'animate-save-pulse' : ''}`}
+                      className={`text-white hover:bg-white/20 p-2 rounded-lg transition-all ${savingPulse ? 'animate-save-pulse' : ''}`}
                       title="Save insight"
                     >
-                      <Save className="w-4 h-4" />
+                      <Save className="w-5 h-5" />
                     </button>
-
-                    {/* Auto-analyze indicator */}
-                    {autoAnalyze && (
-                      <div className="ml-2 text-sm text-indigo-600 italic">{loading ? 'Auto analyzing...' : 'Auto-ready'}</div>
-                    )}
                   </div>
                 </div>
 
-                <div className="border-l-4 border-purple-600 pl-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="w-5 h-5 text-purple-600" />
-                    <h3 className="font-bold text-lg text-gray-800">Key Patterns</h3>
+                {/* Key Patterns */}
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-l-4 border-purple-600 rounded-xl p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Target className="w-5 h-5 text-purple-600" />
+                    <h3 className="font-black text-lg text-gray-800">🎯 Key Patterns</h3>
                   </div>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700">
+                  <ul className="space-y-2">
                     {analysis.keyPatterns.map((pattern, idx) => (
-                      <li key={idx}>{pattern}</li>
+                      <li key={idx} className="flex gap-2 text-gray-700">
+                        <span className="text-purple-600 font-bold">→</span>
+                        <span>{pattern}</span>
+                      </li>
                     ))}
                   </ul>
 
                   {/* Matched keywords */}
                   {matchedKeywords.length > 0 && (
-                    <div className="mt-3">
-                      <div className="text-sm text-gray-600 mb-2">Matched keywords:</div>
+                    <div className="mt-4">
+                      <div className="text-sm font-bold text-gray-700 mb-2">🔍 Matched keywords:</div>
                       <div className="flex flex-wrap gap-2">
                         {matchedKeywords.map((kw, i) => (
                           <button
@@ -521,7 +558,7 @@ export default function BehaviorAnalyzer() {
                               setScenario(appended);
                               analyzeBehavior(appended);
                             }}
-                            className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full hover:bg-indigo-100 transition-transform transform hover:scale-105 keyword-animate"
+                            className="text-xs bg-gradient-to-r from-purple-400 to-pink-400 text-white px-3 py-1.5 rounded-full hover:shadow-lg keyword-animate font-bold border border-purple-300 hover:border-purple-500 transform hover:scale-110"
                             title={`Add "${kw}" to the scenario and re-run`}
                           >
                             {kw}
@@ -532,89 +569,96 @@ export default function BehaviorAnalyzer() {
                   )}
                 </div>
 
-                <div className="border-l-4 border-pink-600 pl-4">
-                  <div className="flex items-center gap-2 mb-2">
+                {/* Psychology section */}
+                <div className="bg-gradient-to-br from-pink-50 to-red-50 border-l-4 border-pink-600 rounded-xl p-6">
+                  <div className="flex items-center gap-2 mb-3">
                     <Brain className="w-5 h-5 text-pink-600" />
-                    <h3 className="font-bold text-lg text-gray-800">Psychological Principles</h3>
+                    <h3 className="font-black text-lg text-gray-800">🧠 Psychological Principles</h3>
                   </div>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700">
+                  <ul className="space-y-2">
                     {analysis.psychologicalPrinciples.map((principle, idx) => (
-                      <li key={idx}>{principle}</li>
+                      <li key={idx} className="flex gap-2 text-gray-700">
+                        <span className="text-pink-600 font-bold">•</span>
+                        <span className="font-semibold">{principle}</span>
+                      </li>
                     ))}
                   </ul>
                 </div>
 
+                {/* Motivations and Predictions */}
                 <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-indigo-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-800 mb-2">Underlying Motivations</h4>
-                    <p className="text-gray-700 text-sm">{analysis.motivations}</p>
+                  <div className="bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-xl p-6 border-2 border-indigo-200">
+                    <h4 className="font-black text-gray-800 mb-2 flex items-center gap-2">💭 Underlying Motivations</h4>
+                    <p className="text-gray-700 text-sm leading-relaxed">{analysis.motivations}</p>
                   </div>
-                  <div className="bg-purple-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-800 mb-2">Likely Outcomes</h4>
-                    <p className="text-gray-700 text-sm">{analysis.predictions}</p>
+                  <div className="bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl p-6 border-2 border-purple-200">
+                    <h4 className="font-black text-gray-800 mb-2 flex items-center gap-2">🔮 Likely Outcomes</h4>
+                    <p className="text-gray-700 text-sm leading-relaxed">{analysis.predictions}</p>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg p-5">
+                {/* Actionable Insights */}
+                <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-xl p-6 shadow-2xl transform hover:scale-102 transition-transform">
                   <div className="flex items-center gap-2 mb-3">
-                    <Lightbulb className="w-5 h-5" />
-                    <h3 className="font-bold text-lg">Actionable Insights</h3>
+                    <Zap className="w-5 h-5" />
+                    <h3 className="font-black text-lg">✨ Actionable Insights</h3>
                   </div>
-                  <div className="flex justify-between items-start gap-2">
-                    <p className="text-white flex-1">{analysis.suggestions}</p>
-                    <div className="flex-shrink-0 ml-4 flex gap-2">
-                      <button
-                        onClick={() => copyToClipboard(analysis.suggestions, 'Insights')}
-                        className="p-2 rounded-md bg-white text-indigo-700 hover:bg-white/90 transition-transform transform hover:scale-105"
-                        title="Copy insights"
-                      >
-                        <Clipboard className="w-4 h-4" />
-                      </button>
-                    </div>
+                  <div className="flex justify-between items-start gap-3">
+                    <p className="text-white flex-1 leading-relaxed font-medium">{analysis.suggestions}</p>
+                    <button
+                      onClick={() => copyToClipboard(analysis.suggestions, 'Insights')}
+                      className="p-2 rounded-lg bg-white text-indigo-700 hover:bg-white/90 transition-all flex-shrink-0 font-bold"
+                      title="Copy insights"
+                    >
+                      <Clipboard className="w-5 h-5" />
+                    </button>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Saved Insights */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-lg text-gray-800">Saved Insights</h3>
-                <div className="text-sm text-gray-600">{savedInsights.length} saved</div>
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20 card-hover">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-black text-xl text-gray-800 flex items-center gap-2">💾 Saved Insights</h3>
+                <div className="text-sm font-bold text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">{savedInsights.length} saved</div>
               </div>
 
               {savedInsights.length === 0 ? (
-                <div className="text-gray-600">No saved insights yet — save useful analyses to revisit them later.</div>
+                <div className="text-center py-8">
+                  <Heart className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                  <p className="text-gray-600 font-semibold">No saved insights yet — save useful analyses to revisit them later 💡</p>
+                </div>
               ) : (
                 <ul className="space-y-3">
                   {savedInsights.map((s) => (
-                    <li key={s.id} className="flex items-start gap-3">
+                    <li key={s.id} className="flex items-start gap-3 bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg border border-indigo-200 hover:shadow-md transition-all">
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <div className="text-sm font-semibold text-gray-800">{s.title}</div>
-                          <div className="text-xs text-gray-500">{new Date(s.savedAt).toLocaleString()}</div>
+                          <div className="font-bold text-gray-800">{s.title}</div>
+                          <div className="text-xs text-gray-500 font-semibold">{new Date(s.savedAt).toLocaleString()}</div>
                         </div>
-                        <div className="text-sm text-gray-600 mt-1">{s.scenario}</div>
+                        <div className="text-sm text-gray-600 mt-1 italic">{s.scenario}</div>
                         <div className="mt-2 flex items-center gap-2">
                           <button
                             onClick={() => copyToClipboard(JSON.stringify(s.analysis, null, 2), 'Saved insight')}
-                            className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full hover:bg-indigo-100"
+                            className="text-xs bg-indigo-200 text-indigo-700 px-2 py-1 rounded-full hover:bg-indigo-300 font-bold transition-all"
                           >
-                            <Clipboard className="w-3 h-3 inline" /> Copy
+                            <Clipboard className="w-3 h-3 inline mr-1" /> Copy
                           </button>
                           <button
                             onClick={() => {
                               setScenario(s.scenario);
                               setAnalysis(s.analysis);
-                              setToast('Loaded into workspace');
+                              setToast('📂 Loaded into workspace');
                             }}
-                            className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full hover:bg-gray-200"
+                            className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full hover:bg-gray-300 font-bold transition-all"
                           >
                             Load
                           </button>
                           <button
                             onClick={() => removeInsight(s.id)}
-                            className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded-full hover:bg-red-100 flex items-center gap-1"
+                            className="text-xs bg-red-200 text-red-700 px-2 py-1 rounded-full hover:bg-red-300 font-bold flex items-center gap-1 transition-all"
                           >
                             <Trash2 className="w-3 h-3" /> Remove
                           </button>
@@ -627,71 +671,58 @@ export default function BehaviorAnalyzer() {
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">How BehaviorIQ Works</h2>
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-10 border border-white/20">
+            <h2 className="text-4xl font-black text-gray-800 mb-8 text-center">🎓 How BehaviorIQ Works</h2>
 
-            <div className="space-y-6">
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                  <span className="text-indigo-600 font-bold">1</span>
+            <div className="space-y-6 mb-10">
+              {[
+                { step: '1', icon: Brain, title: 'Pattern Recognition', desc: 'Our AI identifies behavioral patterns using psychological frameworks and research-backed principles.' },
+                { step: '2', icon: Target, title: 'Context Analysis', desc: 'We analyze the context and underlying motivations driving the behavior.' },
+                { step: '3', icon: Lightbulb, title: 'Actionable Insights', desc: 'Get practical suggestions based on established psychological principles and behavioral science.' }
+              ].map(({ step, icon: Icon, title, desc }) => (
+                <div key={step} className="flex gap-6 p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl hover:shadow-lg transition-all border-l-4 border-indigo-600">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full font-black text-xl shadow-lg">
+                      {step}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-black text-lg text-gray-800 mb-2 flex items-center gap-2">
+                      <Icon className="w-5 h-5 text-indigo-600" />
+                      {title}
+                    </h3>
+                    <p className="text-gray-700 leading-relaxed">{desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-800 mb-2">Pattern Recognition</h3>
-                  <p className="text-gray-600">Our AI identifies behavioral patterns using psychological frameworks and research-backed principles.</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                  <span className="text-purple-600 font-bold">2</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-800 mb-2">Context Analysis</h3>
-                  <p className="text-gray-600">We analyze the context and underlying motivations driving the behavior.</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                  <span className="text-pink-600 font-bold">3</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-800 mb-2">Actionable Insights</h3>
-                  <p className="text-gray-600">Get practical suggestions based on established psychological principles and behavioral science.</p>
-                </div>
-              </div>
+              ))}
             </div>
 
-            <div className="mt-8 p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg">
-              <h3 className="font-semibold text-gray-800 mb-3">Use Cases</h3>
-              <ul className="space-y-2 text-gray-700">
-                <li className="flex items-start gap-2">
-                  <span className="text-indigo-600">•</span>
-                  <span><strong>Management:</strong> Understand team dynamics and improve leadership</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-indigo-600">•</span>
-                  <span><strong>Marketing:</strong> Decode customer behavior and decision-making</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-indigo-600">•</span>
-                  <span><strong>Personal Growth:</strong> Gain insights into your own behavioral patterns</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-indigo-600">•</span>
-                  <span><strong>UX Design:</strong> Create better user experiences based on behavior</span>
-                </li>
-              </ul>
+            <div className="mt-12 p-8 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 rounded-xl border-2 border-indigo-300">
+              <h3 className="font-black text-gray-800 mb-6 text-xl">🚀 Use Cases</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {[
+                  { emoji: '👔', title: 'Management', desc: 'Understand team dynamics and improve leadership' },
+                  { emoji: '📊', title: 'Marketing', desc: 'Decode customer behavior and decision-making' },
+                  { emoji: '🌱', title: 'Personal Growth', desc: 'Gain insights into your own behavioral patterns' },
+                  { emoji: '🎨', title: 'UX Design', desc: 'Create better user experiences based on behavior' }
+                ].map(({ emoji, title, desc }, i) => (
+                  <div key={i} className="bg-white p-4 rounded-lg hover:shadow-md transition-all">
+                    <div className="text-2xl mb-2">{emoji}</div>
+                    <h4 className="font-bold text-gray-800 mb-1">{title}</h4>
+                    <p className="text-sm text-gray-600">{desc}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Toast */}
+      {/* Toast Notifications */}
       {toast && (
-        <div className="fixed right-6 bottom-6 bg-white shadow-lg rounded-lg px-4 py-3 flex items-center gap-3">
-          <Sparkles className="w-5 h-5 text-indigo-600" />
-          <div className="text-sm text-gray-700">{toast}</div>
+        <div className="fixed right-6 bottom-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-2xl rounded-full px-6 py-3 flex items-center gap-3 animate-bounce border border-white/20 backdrop-blur-md z-50 font-bold">
+          <Sparkles className="w-5 h-5 animate-spin" />
+          <div>{toast}</div>
         </div>
       )}
     </div>

@@ -37,6 +37,68 @@
   }
 }
 
+/* ============================================
+   ENHANCED UI ANIMATIONS & EFFECTS
+   ============================================ */
+
+/* Smooth page background animation */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Floating animation for elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Pulse glow effect */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+}
+
+/* Shimmer effect for cards */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Glow text effect */
+@keyframes glow-text {
+  0%, 100% {
+    text-shadow: 0 0 5px rgba(99, 102, 241, 0.5), 0 0 10px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(99, 102, 241, 0.8), 0 0 30px rgba(139, 92, 246, 0.6);
+  }
+}
+
 /* Confetti pieces */
 .confetti-piece {
   position: absolute;
@@ -47,6 +109,7 @@
   opacity: 0.95;
   transform-origin: center;
   animation: confetti-fall 1200ms linear both, confetti-rotate 900ms ease-in-out infinite;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes confetti-fall {
@@ -57,29 +120,264 @@
 }
 
 @keyframes confetti-rotate {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(45deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
-/* Matched keyword tiny pop on click */
+/* Matched keyword animations */
+.keyword-animate {
+  transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.keyword-animate:hover {
+  transform: scale(1.12) translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
 .keyword-animate:active {
   transform: scale(0.95) !important;
 }
-.keyword-animate {
-  transition: transform 160ms ease, box-shadow 200ms ease;
-}
+
 .keyword-animate:focus {
   outline: none;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.18);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.5);
 }
 
 /* Save button pulse */
 @keyframes save-pulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 rgba(99,102,241,0.35); }
-  50% { transform: scale(1.06); box-shadow: 0 6px 18px rgba(99,102,241,0.18); }
-  100% { transform: scale(1); box-shadow: 0 0 0 rgba(99,102,241,0); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
 }
+
 .animate-save-pulse {
   animation: save-pulse 700ms ease;
+}
+
+/* Smooth button transitions */
+button {
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  pointer-events: none;
+}
+
+button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Tab button glow on active */
+.tab-button-active {
+  animation: tab-glow 0.5s ease;
+}
+
+@keyframes tab-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+}
+
+/* Card entrance animation */
+@keyframes card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card-animate {
+  animation: card-enter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Textarea focus glow */n@keyframes textarea-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.05);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.1);
+  }
+}
+
+textarea:focus {
+  animation: textarea-glow 1.5s ease infinite;
+}
+
+/* Hover lift effect for cards */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* Icon bounce */
+@keyframes icon-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.icon-bounce {
+  display: inline-block;
+}
+
+.icon-bounce:hover {
+  animation: icon-bounce 0.6s ease;
+}
+
+/* Result section slide in */
+@keyframes slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.result-slide {
+  animation: slide-in-right 0.5s ease;
+}
+
+/* Progress bar animation */
+@keyframes progress-pulse {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+.progress-bar {
+  animation: progress-pulse 1s ease infinite;
+}
+
+/* Text gradient animation */
+@keyframes gradient-text {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-title {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-text 3s ease infinite;
+}
+
+/* Tooltip fade in */
+@keyframes tooltip-fade {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Badge pulse */
+@keyframes badge-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.badge-animate {
+  animation: badge-pulse 2s ease infinite;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Backdrop blur effect */
+.backdrop-blur {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
 }
