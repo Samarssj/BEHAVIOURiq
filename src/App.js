@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './App.css';
 import {
   Brain,
@@ -161,7 +161,7 @@ export default function BehaviorAnalyzer() {
     }
   };
 
-  const analyzeBehavior = (inputText = null) => {
+  const analyzeBehavior = useCallback((inputText = null) => {
     const text = (inputText ?? scenario ?? '').trim();
     if (!text) return;
 
@@ -222,7 +222,7 @@ export default function BehaviorAnalyzer() {
         setTimeout(() => setCelebrate(false), 1200);
       }, 350);
     }, 900);
-  };
+  }, [scenario]);
 
   // Auto-analyze (debounced) when enabled
   useEffect(() => {
@@ -230,7 +230,7 @@ export default function BehaviorAnalyzer() {
     if (!scenario.trim()) return;
     const id = setTimeout(() => analyzeBehavior(scenario), 600);
     return () => clearTimeout(id);
-  }, [scenario, autoAnalyze]);
+  }, [scenario, autoAnalyze, analyzeBehavior]);
 
   // Load saved insights on mount
   useEffect(() => {
